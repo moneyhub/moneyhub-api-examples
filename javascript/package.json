@@ -1,0 +1,16 @@
+{
+  "name": "moneyhub-api-examples-javascript",
+  "version": "1.0.0",
+  "description": "Moneyhub API Examples for JavaScript",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mft/moneyhub-api-client": "^5.1.2",
+    "yargs": "^17.6.0"
+  }
+}
