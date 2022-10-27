@@ -160,4 +160,4 @@ def verify_id_token(config, id_token, nonce):
     audience=config["client"]["client_id"]
   )
 
-  assert(nonce == decoded["nonce"], "nonce in id_token is not equal to expected value")
+  assert nonce == decoded["nonce"], "nonce in id_token is not equal to expected value"
