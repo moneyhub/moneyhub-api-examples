@@ -100,3 +100,64 @@ def post_request_object(config, payload):
 
   res = requests.post("{}/request".format(identity_server), data="{}".format(request_object), headers=headers)
   return res.text
+
+def register_user(config):
+  identity_server = config["identity_service_url"]
+  token = get_client_credentials_token(config, "user:create")
+
+  headers = {
+    "Authorization": "Bearer {}".format(token["access_token"])
+  }
+
+  res = requests.post("{}/users".format(identity_server), json={}, headers=headers)
+  return res.json()
+
+def exchange_code_for_tokens(config, nonce, id_token, code):
+  identity_server = config["identity_service_url"]
+  
+  client_assertion = get_client_assertion(config=config, scope=None)
+
+  params = {
+    "grant_type": "authorization_code",
+    "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+    "client_assertion": client_assertion,
+    "redirect_uri": config["client"]["redirect_uri"],
+    "code": code,
+  }
+
+  headers = {
+    "Content-Type": "application/x-www-form-urlencoded",
+  }
+
+  res = requests.post("{}/oidc/token".format(identity_server), data=params, headers=headers)
+  return res.json()
+
+def get_accounts(config, user_id):
+  api_url = config["resource_server_url"]
+  token = get_client_credentials_token(config=config, scope="accounts:read", user_id=user_id)
+
+  headers = {
+    "Authorization": "Bearer {}".format(token["access_token"])
+  }
+
+  res = requests.get("{}/accounts".format(api_url), headers=headers)
+  return res.json()
+
+def get_identity_public_key(config):
+  identity_server = config["identity_service_url"]
+  certs = requests.get("{}/oidc/certs".format(identity_server)).json()
+  key = next(filter(lambda k: k["use"] == "sig", certs["keys"]), None)
+
+  return jwk.JWK(**key).export_to_pem(private_key=False, password=None)
+
+def verify_id_token(config, id_token, nonce):
+  identity_server = config["identity_service_url"]
+  public_key = get_identity_public_key(config)
+  decoded = jwt.decode(
+    id_token,
+    public_key, 
+    algorithms="RS256", 
+    audience=config["client"]["client_id"]
+  )
+
+  assert(nonce == decoded["nonce"], "nonce in id_token is not equal to expected value")

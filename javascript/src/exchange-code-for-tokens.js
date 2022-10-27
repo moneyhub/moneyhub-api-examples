@@ -8,6 +8,15 @@ const args = yargs(hideBin(process.argv))
     alias: 'c',
     describe: 'code to exchange code for tokens',
   })
+  .option('nonce', {
+    alias: 'n',
+    describe: 'nonce from original authorisation URL',
+    default: 'bar',
+  })
+  .option('id_token', {
+    alias: 'i',
+    describe: 'id_token from redirect url',
+  })
   .option('state', {
     alias: 's',
     describe: 'state from original authorisation URL',
@@ -20,10 +29,12 @@ const main = async (code) => {
   const tokens = await moneyhub.exchangeCodeForTokens({
     localParams: {
       state: args.state,
+      nonce: args.nonce,
     },
     paramsFromCallback: {
       code: args.code,
       state: args.state,
+      id_token: args.id_token
     },
   });
 

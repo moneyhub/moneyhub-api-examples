@@ -27,7 +27,7 @@ Both of these scripts produce the same result, but differ in how the payee is ma
 
 ## Exchange Code for Tokens
 ```shell
-node src/exchange-code-for-tokens -c <AUTH_CODE>
+node src/exchange-code-for-tokens -c <AUTH_CODE> -i <ID_TOKEN>
 ```
 
 ## Get Accounts

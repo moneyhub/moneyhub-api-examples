@@ -7,6 +7,10 @@ const args = yargs(hideBin(process.argv)).option('state', {
   alias: 's',
   describe: 'state from original authorisation URL',
   default: 'foo',
+}).option('nonce', {
+  alias: 'n',
+  describe: 'nonce for original authorisation URL',
+  default: 'bar',
 }).argv;
 
 const main = async () => {
@@ -23,6 +27,7 @@ const main = async () => {
     payeeRef: 'reference',
     payerRef: 'reference',
     payeeId: payee.data.id,
+    nonce: args.nonce
   });
   console.log(url);
 };
