@@ -19,7 +19,7 @@ params = {
   "state": args.state,
   "nonce": args.nonce,
   "redirect_uri": config["client"]["redirect_uri"],
-  "response_type": "code",
+  "response_type": "code id_token",
   "claims": {
     "id_token": {
       "mh:con_id": {

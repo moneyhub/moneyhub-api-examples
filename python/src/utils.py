@@ -126,7 +126,7 @@ def exchange_code_for_tokens(config, nonce, id_token, code):
   }
 
   headers = {
-    "Content-Type": "application/x-www-form-urlencoded",
+    "Content-Type": "application/x-www-form-urlencoded"
   }
 
   res = requests.post("{}/oidc/token".format(identity_server), data=params, headers=headers)
