@@ -35,7 +35,7 @@ def get_request_object(config, payload):
     "kid": private_key["kid"]
   })
 
-def get_client_assertion(config, scope):
+def get_client_assertion(config):
   client_id = config["client"]["client_id"]
   identity_server = config["identity_service_url"]
 
@@ -45,7 +45,6 @@ def get_client_assertion(config, scope):
     "iss": client_id,
     "sub": client_id,
     "aud": "{}/oidc/token".format(identity_server),
-    "scope": scope,
     **get_common_claims()
   }
 
@@ -57,7 +56,7 @@ def get_private_key(config):
 def get_client_credentials_token(config, scope, user_id=None):
   identity_server = config["identity_service_url"]
 
-  client_assertion = get_client_assertion(config=config, scope=scope)
+  client_assertion = get_client_assertion(config=config)
   params = {
     "scope": scope,
     "grant_type": "client_credentials",
@@ -115,7 +114,7 @@ def register_user(config):
 def exchange_code_for_tokens(config, nonce, id_token, code):
   identity_server = config["identity_service_url"]
   
-  client_assertion = get_client_assertion(config=config, scope=None)
+  client_assertion = get_client_assertion(config=config)
 
   params = {
     "grant_type": "authorization_code",
@@ -161,3 +160,17 @@ def verify_id_token(config, id_token, nonce):
   )
 
   assert nonce == decoded["nonce"], "nonce in id_token is not equal to expected value"
+
+def post_pushed_authorisation_url(config, payload):
+  client_id = config["client"]["client_id"]
+  identity_server = config["identity_service_url"]
+
+  client_assertion = get_client_assertion(config)
+  params = {
+    "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+    "client_assertion": client_assertion,
+    **payload
+  }
+
+  res = requests.post("{}/oidc/request".format(identity_server), data=params)
+  return res.json()
