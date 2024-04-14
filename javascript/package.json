@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "@mft/moneyhub-api-client": "^5.1.2",
-    "yargs": "^17.6.0"
+    "yargs": "^17.7.2"
   }
 }
