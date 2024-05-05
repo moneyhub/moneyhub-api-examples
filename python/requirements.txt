@@ -1,7 +1,7 @@
 certifi==2022.9.24
 cffi==1.15.1
 charset-normalizer==2.1.1
-cryptography==38.0.1
+cryptography==42.0.6
 Deprecated==1.2.13
 idna==3.4
 jwcrypto==1.4.2
